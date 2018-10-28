@@ -7,18 +7,21 @@ class RequestRow extends Component {
 
     state = {
         approve: {
+            errorMessage: '',
             loading: false
         },
 
         finalize: {
+            errorMessage: '',
             loading: false
         }
     }
-
+    
     onApprove = async () => {
 
-        this.setState({ approve: {loading: true}});
+        this.setState({ approve: {loading: true, errorMessage: '' }});
 
+        try {
             const campaign = Campaign(this.props.address);
             const accounts = await web3.eth.getAccounts();
 
@@ -26,20 +29,29 @@ class RequestRow extends Component {
                 from: accounts[0]
             })
 
+        } catch (error) {
+            this.setState({ approve: {errorMessage: error.message }});
+        }
+
 
         this.setState({ approve: {loading: false}});
     }
 
     onFinalize = async () => {
 
-        this.setState({ finalize: {loading: true}});
+        this.setState({ finalize: {loading: true, errorMessage: '' }});
         
+        try {
             const campaign = Campaign(this.props.address);
             const accounts = await web3.eth.getAccounts();
 
             await campaign.methods.finalizeRequest(this.props.id).send({
                 from: accounts[0]
             })
+
+        } catch (error) {
+            this.setState({ finalize: {errorMessage: error.message }});
+        }
 
         
         this.setState({ finalize: {loading: false}});
