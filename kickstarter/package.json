@@ -1,0 +1,35 @@
+{
+  "name": "kickstarter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "eslint": "^5.13.0",
+    "fs-extra": "^7.0.0",
+    "ganache-cli": "^6.3.0",
+    "mocha": "^5.2.0",
+    "next": "^7.0.2",
+    "next-routes": "^1.4.2",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
+    "semantic-ui-react": "^0.83.0",
+    "solc": "^0.5.3",
+    "solhint": "^1.5.1",
+    "truffle-hdwallet-provider": "^1.0.3",
+    "web3": "1.0.0-beta.37"
+  },
+  "scripts": {
+    "test": "mocha",
+    "sol:deploy": "node ./ethereum/deploy.js",
+    "sol:compile": "node ./ethereum/compile.js",
+    "start:dev": "nodemon server.js",
+    "start:prod": "node server.js",
+    "build": "next build"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  },
+  "resolutions": {
+    "terser": "3.14.1"
+  }
+}

@@ -1,0 +1,27 @@
+version: '3'
+services:
+  nginx:
+    restart: always
+    image: 'pedrorio/nginx'
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '4000:80'
+    depends_on:
+      - kickstarter
+  kickstarter:
+    restart: always
+    image: 'pedrorio/kickstarter'
+    build:
+      dockerfile: Dockerfile
+      context: ./kickstarter
+    environment:
+      - NODE_ENV=production
+      - ACCOUNT_MNEMONIC
+      - NETWORK_ENDPOINT
+      - FACTORY_ADDRESS
+    volumes:
+      - /app/node_modules
+      - /app/.next
+      - ./kickstarter:/app
