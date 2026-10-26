@@ -1,9 +1,9 @@
-FROM node:latest
+FROM node:24
 
 WORKDIR '/app'
 
 COPY package.json yarn.lock ./
-RUN yarn
+RUN yarn install --frozen-lockfile --production
 COPY ./ ./
 
 RUN yarn build

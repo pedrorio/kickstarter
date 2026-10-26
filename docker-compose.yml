@@ -21,6 +21,7 @@ services:
       - ACCOUNT_MNEMONIC
       - NETWORK_ENDPOINT
       - FACTORY_ADDRESS
+      - CHAIN_ID
     volumes:
       - /app/node_modules
       - /app/.next

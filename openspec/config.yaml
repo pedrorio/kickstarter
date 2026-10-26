@@ -1,0 +1,39 @@
+schema: spec-driven
+
+context: |
+  This repository is a small Ethereum crowdfunding showcase. Do not deploy
+  contracts. Never print, log, or commit mnemonics, private keys, or secret
+  RPC URLs. ACCOUNT_MNEMONIC is read only by the deploy script and must not
+  be bundled into the browser. Implementation changes stay on the Next.js
+  pages router; a framework upgrade is a separate proposal.
+
+# Project context (optional)
+# Add only constraints that should guide OpenSpec artifacts and workflows.
+# Include constraints an agent cannot infer by reading the code.
+# Keep general project documentation and discoverable codebase facts out.
+# Example:
+#   context: |
+#     Designs and tasks must cover Windows, macOS, and Linux
+#     Write all artifacts in Spanish
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always state what is out of scope
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
