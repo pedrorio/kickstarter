@@ -1,26 +1,36 @@
-const HDWalletProvider = require('truffle-hdwallet-provider');
-const Web3 = require('web3');
+const { ethers } = require('ethers');
+const { abiOf, bytecodeOf, factoryArtifact } = require('./artifacts');
 
-const compiledFactory = require('./build/CampaignFactory.json');
+function safeMessage(error, mnemonic) {
+  const message = (error && (error.shortMessage || error.message)) || 'Deploy failed.';
+  if (mnemonic && message.includes(mnemonic)) {
+    return message.split(mnemonic).join('[redacted]');
+  }
+  return message;
+}
 
-const provider = new HDWalletProvider(
-  process.env.ACCOUNT_MNEMONIC,
-  process.env.NETWORK_ENDPOINT
-);
+async function main() {
+  const mnemonic = process.env.ACCOUNT_MNEMONIC;
+  const endpoint = process.env.NETWORK_ENDPOINT;
+  if (!mnemonic || !endpoint) {
+    console.error('Refusing to deploy: set ACCOUNT_MNEMONIC and NETWORK_ENDPOINT. The mnemonic is never printed.');
+    process.exit(1);
+  }
 
-const web3 = new Web3(provider);
+  const wallet = ethers.HDNodeWallet.fromPhrase(mnemonic).connect(new ethers.JsonRpcProvider(endpoint));
+  console.log('Attempting to deploy from account:', wallet.address);
 
-const deploy = async () => {
-  
-  const accounts = await web3.eth.getAccounts();
-  
-  console.log('Attempting to deploy from account: ', accounts[ 0 ]);
-  
-  const result = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
-  .deploy({ data: compiledFactory.bytecode })
-  .send({ from: accounts[ 0 ], gas: '1000000' });
-  
-  console.log('Contract deployed to address : ', result.options.address);
-};
+  const factory = new ethers.ContractFactory(
+    abiOf(factoryArtifact),
+    bytecodeOf(factoryArtifact),
+    wallet
+  );
+  const deployed = await factory.deploy();
+  await deployed.waitForDeployment();
+  console.log('Contract deployed to address:', await deployed.getAddress());
+}
 
-deploy();
+main().catch((error) => {
+  console.error(safeMessage(error, process.env.ACCOUNT_MNEMONIC));
+  process.exit(1);
+});

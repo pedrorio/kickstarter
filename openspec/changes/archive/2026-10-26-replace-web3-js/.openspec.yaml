@@ -1,0 +1,3 @@
+schema: spec-driven
+created: 2026-10-26
+goal: Call Ethereum with a maintained client and treat deprecated testnets as Sepolia

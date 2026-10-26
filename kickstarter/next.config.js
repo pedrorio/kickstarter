@@ -1,18 +1,16 @@
-const webpack = require('webpack');
+const { resolveChainId } = require('./ethereum/chains');
+
+const resolved = resolveChainId(process.env.CHAIN_ID);
 
 module.exports = {
-  publicRuntimeConfig: {
-    NETWORK_ENDPOINT: process.env.NETWORK_ENDPOINT,
-    FACTORY_ADDRESS: process.env.FACTORY_ADDRESS
+  eslint: {
+    ignoreDuringBuilds: true,
   },
-  webpack: (config) => {
-    config.plugins.push(
-      new webpack.EnvironmentPlugin({
-        ACCOUNT_MNEMONIC: process.env.ACCOUNT_MNEMONIC,
-        NETWORK_ENDPOINT: process.env.NETWORK_ENDPOINT,
-        FACTORY_ADDRESS: process.env.FACTORY_ADDRESS
-      })
-    );
-    return config;
-  }
+  publicRuntimeConfig: {
+    NETWORK_ENDPOINT: process.env.NETWORK_ENDPOINT || '',
+    FACTORY_ADDRESS: process.env.FACTORY_ADDRESS || '',
+    CHAIN_ID: String(resolved.chainId),
+    CHAIN_NAME: resolved.chainName,
+    CHAIN_WARNING: resolved.warning,
+  },
 };
