@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  kickstarter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: kickstarter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+          cache-dependency-path: kickstarter/yarn.lock
+
+      - name: Install
+        run: yarn install --frozen-lockfile
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
+      - name: Contract tests
+        run: yarn test
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
+      - name: Production build
+        run: yarn build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NETWORK_ENDPOINT: http://127.0.0.1:8545
+          FACTORY_ADDRESS: "0x0000000000000000000000000000000000000000"
+          CHAIN_ID: "11155111"
+
+      - name: Production install and build
+        run: |
+          rm -rf node_modules .next
+          yarn install --frozen-lockfile --production
+          yarn build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NETWORK_ENDPOINT: http://127.0.0.1:8545
+          FACTORY_ADDRESS: "0x0000000000000000000000000000000000000000"
+          CHAIN_ID: "11155111"
