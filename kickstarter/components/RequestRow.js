@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'semantic-ui-react';
 import { approveRequest, finalizeRequest } from '../ethereum/campaign';
-import { getSubmitSigner } from '../ethereum/browserSigner';
+import { prepareSigner } from '../ethereum/prepareSigner';
 import { describeTransactionError } from '../ethereum/walletState';
+import { WalletContext } from './WalletProvider';
 import { weiToEther, hasSpendingMajority } from '../ethereum/units';
 
 class RequestRow extends Component {
+  static contextType = WalletContext;
+
   state = {
     approve: { errorMessage: '', loading: false },
     finalize: { errorMessage: '', loading: false },
@@ -14,7 +17,7 @@ class RequestRow extends Component {
   onApprove = async () => {
     this.setState({ approve: { loading: true, errorMessage: '' } });
     try {
-      const signer = await getSubmitSigner();
+      const signer = await prepareSigner(this.context);
       await approveRequest(this.props.address, this.props.id, signer);
       this.setState({ approve: { loading: false, errorMessage: '' } });
     } catch (error) {
@@ -27,7 +30,7 @@ class RequestRow extends Component {
   onFinalize = async () => {
     this.setState({ finalize: { loading: true, errorMessage: '' } });
     try {
-      const signer = await getSubmitSigner();
+      const signer = await prepareSigner(this.context);
       await finalizeRequest(this.props.address, this.props.id, signer);
       this.setState({ finalize: { loading: false, errorMessage: '' } });
     } catch (error) {

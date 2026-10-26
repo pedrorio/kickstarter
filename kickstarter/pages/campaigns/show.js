@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Grid, Button, Message } from 'semantic-ui-react';
 import Layout from '../../components/Layout';
 import { getCampaignSummary } from '../../ethereum/campaign';
+import { readableRpcError } from '../../ethereum/readErrors';
 import { weiToEther } from '../../ethereum/units';
 import ContributeForm from '../../components/ContributeForm';
 import { Link } from '../../routes';
@@ -23,7 +24,7 @@ class CampaignShow extends Component {
         approversCount: '',
         manager: '',
         address: props.query.address,
-        loadError: error.message || 'This campaign could not be loaded.',
+        loadError: readableRpcError(error),
       };
     }
   }
@@ -78,7 +79,9 @@ class CampaignShow extends Component {
       <Layout>
         <h3>Campaign Show</h3>
         {this.props.loadError ? (
-          <Message error header="Campaign unavailable" content={this.props.loadError} />
+          <div role="alert">
+            <Message error header="Campaign unavailable" content={this.props.loadError} />
+          </div>
         ) : (
           <Grid>
             <Grid.Row>

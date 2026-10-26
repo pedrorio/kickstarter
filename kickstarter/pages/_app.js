@@ -1,5 +1,6 @@
 import App from 'next/app';
 import React from 'react';
+import WalletProvider from '../components/WalletProvider';
 import { readPublicConfig, setRuntimeConfig } from '../ethereum/runtimeConfig';
 
 class CrowdCoinApp extends App {
@@ -16,7 +17,11 @@ class CrowdCoinApp extends App {
   render() {
     const { Component, pageProps, runtimeConfig } = this.props;
     setRuntimeConfig(runtimeConfig);
-    return <Component {...pageProps} />;
+    return (
+      <WalletProvider config={runtimeConfig}>
+        <Component {...pageProps} />
+      </WalletProvider>
+    );
   }
 }
 

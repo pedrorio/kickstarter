@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Form, Button, Input, Message } from 'semantic-ui-react';
 import { contribute } from '../ethereum/campaign';
-import { getSubmitSigner } from '../ethereum/browserSigner';
+import { prepareSigner } from '../ethereum/prepareSigner';
 import { describeTransactionError } from '../ethereum/walletState';
 import { Router } from '../routes';
+import { WalletContext } from './WalletProvider';
 
 class ContributeForm extends Component {
+  static contextType = WalletContext;
+
   state = {
     value: '',
     errorMessage: '',
@@ -18,7 +21,7 @@ class ContributeForm extends Component {
     this.setState({ loading: true, errorMessage: '' });
 
     try {
-      const signer = await getSubmitSigner();
+      const signer = await prepareSigner(this.context);
       await contribute(address, this.state.value, signer);
       Router.replaceRoute(`/campaigns/${address}`);
       this.setState({ value: '' });

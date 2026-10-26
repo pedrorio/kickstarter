@@ -3,10 +3,13 @@ import Layout from '../../../components/Layout';
 import { Form, Button, Input, Message } from 'semantic-ui-react';
 import { Link, Router } from '../../../routes';
 import { createRequest } from '../../../ethereum/campaign';
-import { getSubmitSigner } from '../../../ethereum/browserSigner';
+import { prepareSigner } from '../../../ethereum/prepareSigner';
 import { describeTransactionError } from '../../../ethereum/walletState';
+import { WalletContext } from '../../../components/WalletProvider';
 
 class RequestNew extends Component {
+  static contextType = WalletContext;
+
   static async getInitialProps(props) {
     const { address } = props.query;
     return { address };
@@ -27,7 +30,7 @@ class RequestNew extends Component {
     this.setState({ loading: true, errorMessage: '' });
 
     try {
-      const signer = await getSubmitSigner();
+      const signer = await prepareSigner(this.context);
       await createRequest(address, description, value, recipient, signer);
       Router.replaceRoute(`/campaigns/${address}/requests`);
       this.setState({ description: '', value: '', recipient: '' });

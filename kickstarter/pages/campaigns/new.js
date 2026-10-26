@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { Form, Button, Input, Message } from 'semantic-ui-react';
 import Layout from '../../components/Layout';
 import { createCampaign } from '../../ethereum/factory';
-import { getSubmitSigner } from '../../ethereum/browserSigner';
+import { prepareSigner } from '../../ethereum/prepareSigner';
 import { describeTransactionError } from '../../ethereum/walletState';
+import { WalletContext } from '../../components/WalletProvider';
 import { Router } from '../../routes';
 
 class CampaignNew extends Component {
+  static contextType = WalletContext;
+
   state = {
     minimumContribution: '',
     errorMessage: '',
@@ -18,7 +21,7 @@ class CampaignNew extends Component {
     this.setState({ loading: true, errorMessage: '' });
 
     try {
-      const signer = await getSubmitSigner();
+      const signer = await prepareSigner(this.context);
       await createCampaign(this.state.minimumContribution, signer);
       Router.pushRoute('/');
     } catch (error) {

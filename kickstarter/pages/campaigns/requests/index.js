@@ -4,6 +4,7 @@ import RequestRow from '../../../components/RequestRow';
 import { Button, Table, Message } from 'semantic-ui-react';
 import { Link } from '../../../routes';
 import { getCampaignRequests } from '../../../ethereum/campaign';
+import { readableRpcError } from '../../../ethereum/readErrors';
 
 class RequestIndex extends Component {
   static async getInitialProps(props) {
@@ -17,7 +18,7 @@ class RequestIndex extends Component {
         requests: [],
         requestCount: '0',
         approversCount: '0',
-        loadError: error.message || 'Requests could not be loaded.',
+        loadError: readableRpcError(error),
       };
     }
   }
@@ -45,7 +46,9 @@ class RequestIndex extends Component {
           </a>
         </Link>
         {this.props.loadError ? (
-          <Message error header="Requests unavailable" content={this.props.loadError} />
+          <div role="alert">
+            <Message error header="Requests unavailable" content={this.props.loadError} />
+          </div>
         ) : (
           <Table>
             <Header>

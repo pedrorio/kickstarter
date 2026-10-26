@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Button, Message } from 'semantic-ui-react';
 import Layout from '../components/Layout';
 import { getDeployedCampaigns } from '../ethereum/factory';
+import { readableRpcError } from '../ethereum/readErrors';
 import { Link } from '../routes';
 
 class CampaignIndex extends Component {
@@ -12,7 +13,7 @@ class CampaignIndex extends Component {
     } catch (error) {
       return {
         campaigns: [],
-        loadError: error.message || 'Campaigns could not be loaded.',
+        loadError: readableRpcError(error),
       };
     }
   }
@@ -46,7 +47,9 @@ class CampaignIndex extends Component {
           </a>
         </Link>
         {this.props.loadError ? (
-          <Message error header="Campaigns unavailable" content={this.props.loadError} />
+          <div role="alert">
+            <Message error header="Campaigns unavailable" content={this.props.loadError} />
+          </div>
         ) : null}
         {this.renderCampaigns()}
       </Layout>
